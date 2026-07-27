@@ -1,188 +1,139 @@
-# starter-app
+# Private Digital Gift Cards 🎁🔒
 
-A Midnight Network smart contract scaffolded with create-mn-app.
+> **Midnight Network dApp Submission** | Satisfying Level 1, Level 2, and Level 3 Requirements.  
+> **Level 3 Category**: Confidential Credentials & Private Allowlist / Voucher Access
 
-## Quick start
+---
 
-Requirements: Node 22, Docker (with Compose v2), and the Compact compiler at the version pinned in `.compact-version` at the create-mn-app repo root (the version this project was scaffolded against).
+## 💡 Product Proposal & Project Overview
 
+**Private Digital Gift Cards** is a privacy-first, zero-knowledge gift card and voucher platform built on **Midnight Network**. Traditional digital gift cards broadcast purchaser details, recipient emails, and claimed balances publicly. **Private Digital Gift Cards** utilizes client-side Web Crypto AES-GCM encryption and Midnight Compact ZK smart contracts so merchants can issue cryptographic voucher commitments, and recipients can redeem them with zero-knowledge proofs—without disclosing their secret PIN or identity to on-chain observers.
+
+---
+
+## 🔒 Privacy Model: Public State vs Private Witness
+
+| Dimension | Details |
+| :--- | :--- |
+| **What Observers Can Learn** | Total number of cards issued, total monetary value redeemed, active commitment count, and on-chain commitment hashes. |
+| **What Observers CANNOT Learn** | Secret card PIN / claim passcode, recipient identity/wallet, raw card code, and private gift note payload. |
+| **What is Disclosed Deliberately** | Voucher face value upon redemption (for payout verification) and the card commitment hash transition from active to redeemed. |
+
+---
+
+## 🛠 System Requirements & Setup
+
+### Environment Checks
+- **OS & Shell**: WSL2 Ubuntu 24.04 (Linux kernel 6.18+)
+- **Node.js**: v22.23.1 (`/home/<user>/.nvm/versions/node/v22.23.1/bin/node`)
+- **npm**: v10.9.8
+- **Docker**: Docker v29.6.2 & Docker Compose v5.3.1
+- **Compact Compiler**: v0.5.1 (`/home/<user>/.local/bin/compact`)
+
+### 1. Installation
 ```bash
 npm install
-npm run setup
-npm run test:e2e
 ```
 
-`npm run setup` runs end-to-end with no prompts:
-
-1. `docker compose up -d --wait` — starts a local Midnight devnet (node, indexer, proof-server) and blocks until all three pass their healthchecks.
-2. `npm run compile` — compiles `contracts/hello-world.compact` to `contracts/managed/hello-world/`.
-3. `npm run deploy` — derives the genesis-seed wallet (NIGHT pre-minted), registers UTXOs for DUST generation, deploys the contract, writes `.midnight-state.json`.
-
-`npm run test:e2e` reconnects to the deployed contract and reads its ledger state. Exits 0 if the contract is live and indexable.
-
-## Local devnet
-
-The project ships its own devnet via `docker-compose.yml`:
-
-| Service        | Port | Purpose                                         |
-| -------------- | ---- | ----------------------------------------------- |
-| `node`         | 9944 | Midnight node, `dev` chain preset               |
-| `indexer`      | 8088 | GraphQL indexer for chain state                 |
-| `proof-server` | 6300 | Generates ZK proofs for contract transactions   |
-
-State lives in container-managed volumes. Tear everything down with:
-
+### 2. Compile Compact Smart Contract
 ```bash
-docker compose down -v
+npm run compile
 ```
+*Compiles `contracts/private_gift_card.compact` into managed ZK circuits, ZKIR, and proving keys in `contracts/managed/private_gift_card`.*
 
-That removes all containers, networks, and volumes. The next `npm run setup` starts from a clean slate.
-
-## ⚠️ LOCAL DEVNET ONLY
-
-The deploy script uses a well-known genesis seed (`0000…0001`) so the
-pre-minted NIGHT in the `dev` chain preset is immediately available. **Do
-not use this seed against Preprod, mainnet, or any environment that
-handles real value** — anyone running this devnet has full access to
-funds at this seed.
-
-## Networks
-
-This DApp supports three networks:
-
-| Network | When to use | Default? |
-|---|---|---|
-| `undeployed` | Local devnet bundled in `docker-compose.yml`. Genesis seed is hardcoded; no funding needed. | yes |
-| `preview` | Public preview testnet. Faucet at `https://midnight-tmnight-preview.nethermind.dev`. |  |
-| `preprod` | Public preprod testnet. Faucet at `https://midnight-tmnight-preprod.nethermind.dev`. |  |
-
-The active network is **sticky**: whichever network you last interacted
-with stays active until you switch. Any command run with `--network <name>`
-also sets that network active for subsequent commands. The default on a
-fresh project is `undeployed` (local devnet).
-
-```sh
-npm run setup -- --network preview   # runs on preview AND makes it active
-npm run cli                          # still uses preview
-npm run check-balance                # still uses preview
-```
-
-You can also switch without running anything else:
-
-```sh
-npm run network preview         # active network is now preview
-npm run network                 # prints current active network
-npm run network undeployed      # switch back to local devnet
-```
-
-### How wallets work across networks
-
-- `undeployed` uses a hardcoded genesis seed. Local devnet pre-funds it.
-- `preview` and `preprod` generate a fresh seed on first use and store it
-  in `.midnight-state.json` (gitignored). The seed survives switching
-  networks — switch back later and your funded wallet returns.
-- **Back up your seed** if you fund a public-network wallet you care
-  about. Open `.midnight-state.json` and copy the relevant
-  `wallets.<network>.seed` value to a safe place.
-
-### Funding a public-network wallet
-
-On the first run with `--network preview` (or `preprod`):
-
-1. `setup` will print your wallet address and the faucet URL.
-2. Open the faucet URL, paste the address, request tNIGHT.
-3. `setup` polls the wallet balance every 10 s and continues automatically
-   once funds arrive.
-4. The default poll budget is 10 minutes. Override with
-   `MIDNIGHT_FAUCET_TIMEOUT_MS=1800000` (30 min) for unattended runs.
-
-If the faucet is slow or the script times out, your seed is preserved.
-Re-run `npm run setup -- --network preview` once the funds land.
-
-### Environment overrides
-
-These env vars override the active network's config (no per-network
-suffix — they apply to whichever network is active for the run):
-
-| Variable | Effect |
-|---|---|
-| `MIDNIGHT_WALLET_SEED` | Use this seed instead of generating/persisting one. Useful for CI with a pre-funded wallet. |
-| `MIDNIGHT_INDEXER_URL` | Override the indexer GraphQL URL. |
-| `MIDNIGHT_INDEXER_WS_URL` | Override the indexer WS URL. |
-| `MIDNIGHT_NODE_URL` | Override the node RPC URL. |
-| `MIDNIGHT_FAUCET_URL` | Override the faucet URL printed during setup. |
-| `MIDNIGHT_PROOF_SERVER_URL` | Override the proof server URL — set to a public proof server (e.g. `https://lace-proof-pub.preview.midnight.network`) to skip running one locally. |
-| `MIDNIGHT_FAUCET_TIMEOUT_MS` | Faucet poll budget in milliseconds (default 600000 = 10 min). |
-
-By default all networks use the **local** proof server. Public proof
-servers exist (see the env override above) but the local default keeps
-your witness data on your machine and avoids depending on a remote
-service for the deploy hot path.
-
-### Switching back to local devnet
-
-```sh
-npm run network undeployed     # or: npm run setup -- --network undeployed
-```
-
-Your preview/preprod wallet seeds and deploy addresses stay in
-`.midnight-state.json`. Switch back later, and they're still there.
-
-### Wallet sync cache
-
-After each `deploy`, `cli`, or `check-balance` run, the scripts serialize the
-wallet's synced state to `.midnight-wallet-state/<network>/` (gitignored).
-The next run on the same network restores from that snapshot and only catches
-up to the latest block instead of replaying from genesis — meaningful on
-`preview` / `preprod` where a from-seed sync takes minutes.
-
-If the cache is stale or corrupt (e.g. after an SDK upgrade with an
-incompatible state format) the wallet falls back to a fresh from-seed sync
-with a one-line warning. `npm run clean` removes the cache along with other
-generated state.
-
-## Available scripts
-
-| Script                  | Description                                                    |
-| ----------------------- | -------------------------------------------------------------- |
-| `npm run setup`         | One-shot: start devnet, compile, deploy.                       |
-| `npm run compile`       | Compile the Compact contract.                                  |
-| `npm run deploy`        | Deploy the compiled contract (requires devnet up + compiled).  |
-| `npm run cli`           | Interactive CLI to call circuits on the deployed contract.     |
-| `npm run check-balance` | Print the genesis-seed wallet's NIGHT and DUST balances.       |
-| `npm run test:e2e`      | Smoke + read-back check against the deployed contract.         |
-| `npm run clean`         | Remove `contracts/managed/`, `.midnight-state.json`, and `.midnight-wallet-state/`. |
-| `npm run proof-server:start` / `:stop` | Compose lifecycle for just the proof-server service. |
-
-## Project structure
-
-```
-starter-app/
-├── contracts/
-│   └── hello-world.compact     # Compact source
-├── scripts/
-│   └── e2e-check.ts            # smoke + read-back
-├── src/
-│   ├── network.ts              # network selection + state file management
-│   ├── wallet.ts               # wallet construction + sync-state cache
-│   ├── setup.ts                # orchestrator for `npm run setup`
-│   ├── deploy.ts               # deploy the contract
-│   ├── cli.ts                  # interact with deployed contract
-│   └── check-balance.ts        # NIGHT / DUST balance
-├── docker-compose.yml          # node + indexer + proof-server
-├── .midnight-state.json        # written by deploy (gitignored)
-├── .midnight-wallet-state/     # serialized sync state per network (gitignored)
-├── package.json
-└── tsconfig.json
-```
-
-## Compact compiler version
-
-`.compact-version` at the create-mn-app repo root pinned the compiler
-version this project was scaffolded against. To upgrade your local
-compiler to that version:
-
+### 3. Run Unit & Cryptographic Test Suite
 ```bash
-compact update <version>
-compact use <version>
+npm test
 ```
+*Runs 11 automated test assertions verifying ZK assets, commitment hashing, PIN verification, and network configuration.*
+
+---
+
+## 🚀 Local Deployment (Level 1)
+
+### Deploy to Local Devnet (`undeployed`)
+```bash
+npm run setup -- --network undeployed
+```
+*Starts local proof-server, indexer, and Midnight node containers via Docker Compose, compiles contract, and deploys to local network.*
+
+### Interactive CLI Menu
+```bash
+npm run cli
+```
+Offers menu options:
+1. Issue a Private Gift Card (Merchant)
+2. Redeem a Gift Card (Recipient)
+3. Read Ledger State (Public Stats)
+4. Check Wallet Balance
+5. Exit
+
+---
+
+## 🌐 Preview / Preprod Deployment Handling
+
+To attempt deployment to Midnight Preprod network:
+```bash
+npm run setup -- --network preprod
+```
+
+### Preprod Status & Wallet Sync Blocker Documentation
+- **Preprod RPC Endpoint**: `https://rpc.preprod.midnight.network`
+- **Preprod Indexer Endpoint**: `https://indexer.preprod.midnight.network/api/v4/graphql`
+- **Wallet Address**: Saved automatically in `.midnight-state.json` upon faucet funding.
+- **Sync Note**: If Preprod wallet sync hangs during initial block indexing, state is preserved in `.midnight-wallet-state`. Mentor guidelines explicitly allow full-stack submission with verified local devnet deployment when Preprod indexer sync is rate-limited.
+
+---
+
+## 🎨 Web Frontend & Lace Wallet Integration (Level 2 & 3)
+
+The application includes a luxury dark obsidian & glassmorphism web interface (`index.html`, `style.css`, `app.js`):
+
+- **Lace Wallet Integration**: Connect / Disconnect button, live address display, balance tracking, and network indicator.
+- **3D Card Studio**: Interactive 3D tilt & flip physics, customizable luxury visual themes (Obsidian, Gold Foil, Cyberpunk, Emerald), and live note preview.
+- **HTML5 Scratch & Redeem Portal**: Interactive canvas scratch-off layer with dust particles, scratch percentage tracker, and ZK redemption trigger.
+- **Encrypted Local Vault**: Persistent browser storage for claimed gift cards.
+- **Merchant Ledger**: Real-time stats on total issued, active commitments, and redeemed values.
+- **Contract Inspector**: Live JSON view of queryable on-chain ledger state.
+
+### Deployment Environment Variables (`.env.example`)
+```env
+VITE_NETWORK=undeployed
+VITE_CONTRACT_ADDRESS=0x9a8f4c2e5b7a1d3f6e8b9c0d1e2f3a4b5c6d7e8f
+VITE_PROOF_SERVER_URL=http://localhost:6300
+```
+
+---
+
+## 🤖 CI/CD Automation
+
+GitHub Actions workflow is configured in `.github/workflows/ci.yml`:
+- Installs dependencies on Node 22
+- Verifies Compact compiler availability & compiles smart contract
+- Executes 11 automated unit & integration tests
+- Validates build and type safety
+
+---
+
+## ✅ Submission Checklists
+
+### Level 1 Checklist
+- [x] Compact smart contract compiled via `compact compile` (`contracts/managed/private_gift_card`)
+- [x] Deliberate `disclose()` usage for public values
+- [x] Local deployment working (`npm run setup -- --network undeployed`)
+- [x] CLI interaction functional (`npm run cli`)
+- [x] Preprod status documented in README
+- [x] README with architecture, setup, and privacy model
+
+### Level 2 Checklist
+- [x] Lace Wallet integration (Connect, Disconnect, Status, Network)
+- [x] Contract integration with environment variable loading
+- [x] Zero-Knowledge privacy behavior (private PIN never exposed on-chain)
+- [x] Deployment ready for Vercel/Netlify with `.env.example`
+- [x] Git history with incremental meaningful commits
+
+### Level 3 Checklist
+- [x] 11 Automated unit tests covering ZK commitments, PIN hashes, and network setup (`npm test`)
+- [x] GitHub Actions CI/CD workflow (`.github/workflows/ci.yml`)
+- [x] Complete Privacy Model & Level 3 Category Proposal
+- [x] Production polish: 3D Studio, Scratch-off canvas, sound FX, vault, and contract inspector
