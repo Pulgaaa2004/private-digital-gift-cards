@@ -3,6 +3,7 @@
 > **Midnight Network Level 3 Submission**  
 > **Category**: Confidential Credentials & Private Allowlist / Voucher Access  
 > **Live Demo URL**: [https://private-digital-gift-cards-9tt5.vercel.app/](https://private-digital-gift-cards-9tt5.vercel.app/)  
+> **Video Demo**: [https://youtu.be/cv2_r7YBLYg?feature=shared](https://youtu.be/cv2_r7YBLYg?feature=shared)  
 > **Repository**: [https://github.com/Pulgaaa2004/private-digital-gift-cards](https://github.com/Pulgaaa2004/private-digital-gift-cards)
 
 ---
