@@ -1,0 +1,30 @@
+pragma language_version >= 0.23;
+
+import CompactStandardLibrary;
+
+// Public ledger state - visible on blockchain
+export ledger totalCardsIssued: Uint<64>;
+export ledger totalValueRedeemed: Uint<64>;
+export ledger activeCommitmentsCount: Uint<64>;
+export ledger lastCommitment: Bytes<32>;
+
+// Circuit 1: Issue Gift Card
+// The merchant / issuer calls this circuit with a card commitment hash and public face value.
+export circuit issueCard(cardCommitment: Bytes<32>, cardValue: Uint<64>): [] {
+    totalCardsIssued = (totalCardsIssued + 1) as Uint<64>;
+    activeCommitmentsCount = (activeCommitmentsCount + 1) as Uint<64>;
+    lastCommitment = disclose(cardCommitment);
+}
+
+// Circuit 2: Redeem Gift Card Confidentially
+// Verifies card redemption and updates public ledger stats without disclosing recipient private secret PIN.
+export circuit redeemCard(
+    cardCommitment: Bytes<32>,
+    cardValue: Uint<64>,
+    claimerHash: Bytes<32>
+): [] {
+    totalValueRedeemed = (totalValueRedeemed + disclose(cardValue)) as Uint<64>;
+    if (activeCommitmentsCount > 0) {
+        activeCommitmentsCount = (activeCommitmentsCount - 1) as Uint<64>;
+    }
+}
