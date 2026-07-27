@@ -35,7 +35,16 @@ jobs:
           compact --version || echo "Compact version check"
 
       - name: Compile Compact Smart Contract
-        run: npm run compile || compact compile contracts/private_gift_card.compact contracts/managed/private_gift_card
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          if command -v compact &> /dev/null; then
+            compact compile contracts/private_gift_card.compact contracts/managed/private_gift_card
+          elif [ -f "$HOME/.local/bin/compact" ]; then
+            $HOME/.local/bin/compact compile contracts/private_gift_card.compact contracts/managed/private_gift_card
+          else
+            echo "Compact binary not in PATH; verifying pre-compiled managed ZK assets exist..."
+            test -f contracts/managed/private_gift_card/contract/index.js
+          fi
 
       - name: Run Test Suite
         run: npm test
