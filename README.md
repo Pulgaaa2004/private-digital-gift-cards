@@ -19,6 +19,30 @@
 
 ---
 
+## 📸 Application Screenshots & User Interface Flow
+
+### 1. 3D Studio & Issue Tab
+*Customize gift card themes (Obsidian, Gold Foil, Cyberpunk, Emerald), set voucher value, and issue zero-knowledge gift card commitments on Midnight Network.*  
+![3D Studio & Issue](assets/01-3d-studio-issue.png)
+
+### 2. Scratch & Redeem Portal
+*Interactive HTML5 canvas scratch-off layer with real-time foil scratch progress tracking and secret PIN ZK redemption proof submission.*  
+![Scratch & Redeem](assets/02-scratch-redeem.png)
+
+### 3. Encrypted Vault Tab
+*Safely manage claimed and saved confidential gift cards backed by local browser encrypted storage.*  
+![Encrypted Vault](assets/03-encrypted-vault.png)
+
+### 4. Merchant Analytics Ledger
+*Merchant campaign overview tracking active commitments vs total claimed values without exposing recipient identities.*  
+![Merchant Ledger](assets/04-merchant-ledger.png)
+
+### 5. Midnight Smart Contract Inspector
+*Live query interface displaying on-chain public ledger state (`totalCardsIssued`, `totalValueRedeemed`, `activeCommitmentsCount`, `lastCommitment`).*  
+![State & Contract Inspector](assets/05-state-contract.png)
+
+---
+
 ## 💡 Product Proposal & Project Overview
 
 **Private Digital Gift Cards** is a privacy-first, zero-knowledge digital gift card and voucher platform built on **Midnight Network**. Traditional digital gift cards broadcast purchaser details, recipient emails, and claimed balances publicly. **Private Digital Gift Cards** utilizes client-side Web Crypto AES-GCM encryption and Midnight Compact ZK smart contracts (`private_gift_card.compact`) so merchants can issue cryptographic voucher commitments, and recipients can redeem them with zero-knowledge proofs—without disclosing their secret PIN or identity to on-chain observers.

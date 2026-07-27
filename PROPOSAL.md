@@ -59,7 +59,26 @@ Our solution leverages **Midnight Compact ZK Smart Contracts** (`private_gift_ca
 
 ---
 
-## 4. Technical Implementation & Modules
+## 4. Application Screenshots & User Interface Flow
+
+### 1. 3D Studio & Issue Tab
+![3D Studio & Issue](assets/01-3d-studio-issue.png)
+
+### 2. Scratch & Redeem Portal
+![Scratch & Redeem](assets/02-scratch-redeem.png)
+
+### 3. Encrypted Vault Tab
+![Encrypted Vault](assets/03-encrypted-vault.png)
+
+### 4. Merchant Analytics Ledger
+![Merchant Ledger](assets/04-merchant-ledger.png)
+
+### 5. Midnight Smart Contract Inspector
+![State & Contract Inspector](assets/05-state-contract.png)
+
+---
+
+## 5. Technical Implementation & Modules
 
 1. **Compact ZK Circuit (`contracts/private_gift_card.compact`)**:
    - `issueCard(cardCommitment: Bytes<32>, cardValue: Uint<64>)`: Merchant issues card commitment.
