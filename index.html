@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Private Digital Gift Cards | Zero-Knowledge Vouchers on Midnight Network</title>
+  <meta name="description" content="Create, transfer, and redeem digital gift cards confidentially using zero-knowledge smart contracts on Midnight Network.">
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app-container">
+    <!-- Header Navigation -->
+    <header class="navbar">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <i class="fa-solid fa-gift"></i>
+        </div>
+        <div class="logo-text">
+          <span class="brand-title">Private Gift Cards</span>
+          <span class="brand-badge">Midnight ZK dApp</span>
+        </div>
+      </div>
+
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-tab="studio">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> 3D Studio & Issue
+        </button>
+        <button class="nav-tab" data-tab="scratch">
+          <i class="fa-solid fa-coins"></i> Scratch & Redeem
+        </button>
+        <button class="nav-tab" data-tab="vault">
+          <i class="fa-solid fa-vault"></i> Encrypted Vault
+        </button>
+        <button class="nav-tab" data-tab="merchant">
+          <i class="fa-solid fa-chart-pie"></i> Merchant Ledger
+        </button>
+        <button class="nav-tab" data-tab="contract">
+          <i class="fa-solid fa-file-contract"></i> State & Contract
+        </button>
+      </nav>
+
+      <!-- Lace Wallet Widget -->
+      <div class="wallet-widget">
+        <div class="network-badge" id="network-status">
+          <span class="status-dot online"></span>
+          <span id="network-name">Undeployed Devnet</span>
+        </div>
+        
+        <button id="btn-connect-wallet" class="btn btn-primary btn-wallet">
+          <i class="fa-solid fa-wallet"></i>
+          <span id="wallet-btn-text">Connect Lace Wallet</span>
+        </button>
+
+        <div id="wallet-info-dropdown" class="wallet-info-dropdown hidden">
+          <div class="info-row">
+            <span class="label">Status:</span>
+            <span class="value green" id="wallet-status-label">Connected</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Address:</span>
+            <span class="value monospace" id="wallet-address-truncated">mn_addr...</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Balance:</span>
+            <span class="value" id="wallet-balance-val">0 tNIGHT</span>
+          </div>
+          <button id="btn-disconnect-wallet" class="btn btn-sm btn-danger mt-2">
+            <i class="fa-solid fa-power-off"></i> Disconnect
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-layout">
+      <!-- TAB 1: 3D CARD STUDIO & ISSUANCE -->
+      <section id="tab-studio" class="tab-content active">
+        <div class="studio-grid">
+          <!-- Left: 3D Interactive Card Preview -->
+          <div class="card-preview-column">
+            <div class="card-stage">
+              <div id="gift-card-3d" class="gift-card-3d theme-obsidian">
+                <div class="card-face card-front">
+                  <div class="card-bg-overlay"></div>
+                  <div class="card-top">
+                    <span class="card-brand" id="preview-merchant-name">LUXE DIGITAL STORE</span>
+                    <span class="card-chip"><i class="fa-solid fa-microchip"></i></span>
+                  </div>
+                  <div class="card-middle">
+                    <div class="card-value-display">
+                      <span class="currency-symbol" id="preview-currency">$</span>
+                      <span class="amount" id="preview-amount">100</span>
+                    </div>
+                    <div class="card-title-text" id="preview-card-title">Confidential Gift Voucher</div>
+                  </div>
+                  <div class="card-bottom">
+                    <div class="card-code-blurred" id="preview-code">••••-••••-••••-9941</div>
+                    <div class="zk-badge"><i class="fa-solid fa-shield-halved"></i> Midnight ZK Enforced</div>
+                  </div>
+                </div>
+                <div class="card-face card-back">
+                  <div class="card-bg-overlay"></div>
+                  <div class="card-back-content">
+                    <div class="mag-stripe"></div>
+                    <div class="secret-pin-box">
+                      <span class="label">SECRET PIN REQUIREMENT:</span>
+                      <span class="pin-dots">🔒 ENCRYPTED WITH PBKDF2</span>
+                    </div>
+                    <div class="card-note-preview" id="preview-note">"Happy Birthday! Enjoy your private digital reward."</div>
+                    <div class="qr-placeholder" id="preview-qr">
+                      <i class="fa-solid fa-qrcode"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card-controls-bar">
+              <button class="btn btn-secondary btn-sm" id="btn-flip-card">
+                <i class="fa-solid fa-rotate"></i> Flip Card 3D
+              </button>
+              <button class="btn btn-secondary btn-sm" id="btn-sample-sound">
+                <i class="fa-solid fa-volume-high"></i> Sound FX
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Customization & ZK Issue Form -->
+          <div class="card-customizer-column card-glass">
+            <h2><i class="fa-solid fa-pen-ruler"></i> Customize & Issue ZK Gift Card</h2>
+            <p class="subtitle">Issue zero-knowledge vouchers backed by Midnight smart contract circuit.</p>
+
+            <form id="issue-card-form" onsubmit="return false;">
+              <div class="form-group">
+                <label>Card Visual Theme</label>
+                <div class="theme-picker">
+                  <button type="button" class="theme-opt active" data-theme="obsidian" style="background: linear-gradient(135deg, #111, #333); border-color: #8b5cf6;">Obsidian</button>
+                  <button type="button" class="theme-opt" data-theme="gold" style="background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728);">Gold Foil</button>
+                  <button type="button" class="theme-opt" data-theme="cyber" style="background: linear-gradient(135deg, #06b6d4, #3b82f6, #ec4899);">Cyberpunk</button>
+                  <button type="button" class="theme-opt" data-theme="emerald" style="background: linear-gradient(135deg, #059669, #10b981);">Emerald</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group col-6">
+                  <label for="input-merchant">Merchant Name</label>
+                  <input type="text" id="input-merchant" value="Luxe Digital Store" required>
+                </div>
+                <div class="form-group col-6">
+                  <label for="input-value">Voucher Value ($)</label>
+                  <input type="number" id="input-value" value="100" min="1" max="10000" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="input-note">Personal Secret Message (Encrypted Client-Side)</label>
+                <textarea id="input-note" rows="2">Happy Birthday! Enjoy your private digital reward.</textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="input-pin">Claim Passcode / PIN (Zero-Knowledge Witness)</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-key"></i>
+                  <input type="password" id="input-pin" placeholder="Enter secret 4+ digit PIN" value="1234" required>
+                </div>
+                <small class="help-text">Observers cannot see this PIN. It is hashed into the card's ZK commitment.</small>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="btn-issue-zk-card" class="btn btn-primary btn-block btn-lg">
+                  <i class="fa-solid fa-shield-cat"></i> Issue ZK Card on Midnight
+                </button>
+              </div>
+            </form>
+
+            <div id="issue-result-box" class="result-card hidden mt-3">
+              <div class="result-header green">
+                <i class="fa-solid fa-circle-check"></i> Gift Card Issued & Recorded on Midnight
+              </div>
+              <div class="result-body">
+                <p><strong>Card ID:</strong> <span id="res-card-id" class="monospace">CARD-8819-ZK</span></p>
+                <p><strong>Commitment Hash:</strong> <span id="res-commitment" class="monospace text-break">0x7f8a...3b9e</span></p>
+                <div class="share-link-group mt-2">
+                  <label>Shareable Claim Link (Includes Encrypted Payload):</label>
+                  <div class="input-copy-box">
+                    <input type="text" id="res-share-link" readonly value="https://midnight-giftcards.app/claim#payload=...">
+                    <button class="btn btn-sm btn-secondary" id="btn-copy-link"><i class="fa-solid fa-copy"></i> Copy</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: SCRATCH & REDEEM PORTAL -->
+      <section id="tab-scratch" class="tab-content">
+        <div class="scratch-layout card-glass">
+          <div class="scratch-header">
+            <h2><i class="fa-solid fa-coins"></i> Scratch & Redeem Portal</h2>
+            <p class="subtitle">Scratch the metallic foil layer below to reveal your private voucher details and submit ZK redemption proof.</p>
+          </div>
+
+          <div class="scratch-container">
+            <!-- Scratch Canvas Box -->
+            <div class="scratch-box-wrapper">
+              <div class="scratch-card-underlayer">
+                <div class="voucher-secret-content">
+                  <div class="voucher-icon"><i class="fa-solid fa-trophy"></i></div>
+                  <div class="voucher-value-revealed">$<span id="revealed-amount">100</span> VOUCHER</div>
+                  <div class="voucher-code-revealed" id="revealed-code">GIFT-9982-MIDNIGHT-ZK</div>
+                  <div class="voucher-note-revealed" id="revealed-note">"Happy Birthday! Enjoy your private digital reward."</div>
+                </div>
+              </div>
+              <canvas id="scratch-canvas" width="480" height="260"></canvas>
+            </div>
+
+            <!-- Scratch Status & Redeem Controls -->
+            <div class="scratch-controls">
+              <div class="scratch-progress-box">
+                <label>Foil Scratched Progress:</label>
+                <div class="progress-bar-bg">
+                  <div id="scratch-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+                <span id="scratch-percent-text">0% Scratched</span>
+              </div>
+
+              <div class="redeem-verification-form card-glass mt-3">
+                <h3><i class="fa-solid fa-lock"></i> Submit ZK Proof to Redeem</h3>
+                <p>Enter the Secret PIN associated with this gift card to generate a zero-knowledge proof of ownership.</p>
+
+                <div class="form-group">
+                  <label for="redeem-pin-input">Secret PIN / Passcode</label>
+                  <input type="password" id="redeem-pin-input" placeholder="Enter PIN to unlock" value="1234">
+                </div>
+
+                <button id="btn-submit-redeem" class="btn btn-success btn-block btn-lg" disabled>
+                  <i class="fa-solid fa-unlock-keyhole"></i> Submit ZK Proof & Claim Funds
+                </button>
+
+                <div id="redeem-status-msg" class="mt-2 text-center font-sm">
+                  Scratch at least 50% of the foil layer to enable ZK redemption.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: ENCRYPTED LOCAL VAULT -->
+      <section id="tab-vault" class="tab-content">
+        <div class="card-glass">
+          <div class="section-header">
+            <h2><i class="fa-solid fa-vault"></i> Encrypted Gift Card Vault</h2>
+            <p class="subtitle">Your claimed and saved gift cards are safely stored in your browser's encrypted local storage.</p>
+          </div>
+
+          <div id="vault-list" class="vault-grid">
+            <!-- Sample Vault Cards will be populated by app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: MERCHANT LEDGER -->
+      <section id="tab-merchant" class="tab-content">
+        <div class="card-glass">
+          <div class="section-header">
+            <h2><i class="fa-solid fa-chart-pie"></i> Merchant Analytics & Voucher Ledger</h2>
+            <p class="subtitle">Zero-knowledge campaign tracking without tracking recipient identities.</p>
+          </div>
+
+          <div class="stats-overview-grid">
+            <div class="stat-card">
+              <div class="stat-icon purple"><i class="fa-solid fa-ticket"></i></div>
+              <div class="stat-val" id="stat-total-issued">3</div>
+              <div class="stat-label">Total Cards Issued</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+              <div class="stat-val" id="stat-total-redeemed">1</div>
+              <div class="stat-label">Total Cards Redeemed</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon gold"><i class="fa-solid fa-vault"></i></div>
+              <div class="stat-val" id="stat-active-commitments">2</div>
+              <div class="stat-label">Active Commitments</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon cyan"><i class="fa-solid fa-dollar-sign"></i></div>
+              <div class="stat-val" id="stat-value-redeemed">$100</div>
+              <div class="stat-label">Total Value Redeemed</div>
+            </div>
+          </div>
+
+          <div class="table-responsive mt-4">
+            <table class="merchant-table">
+              <thead>
+                <tr>
+                  <th>Card ID</th>
+                  <th>Value</th>
+                  <th>Commitment Hash</th>
+                  <th>Status</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="merchant-ledger-tbody">
+                <!-- Ledger rows populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: CONTRACT & NETWORK INSPECTOR -->
+      <section id="tab-contract" class="tab-content">
+        <div class="card-glass">
+          <div class="section-header">
+            <h2><i class="fa-solid fa-file-contract"></i> Midnight Smart Contract Inspector</h2>
+            <p class="subtitle">Inspect on-chain public ledger state and zero-knowledge circuit specifications.</p>
+          </div>
+
+          <div class="inspector-grid">
+            <div class="inspector-box">
+              <h3><i class="fa-solid fa-server"></i> Contract Details</h3>
+              <div class="info-list">
+                <div class="info-item">
+                  <span class="key">Contract Name:</span>
+                  <span class="val monospace">private_gift_card.compact</span>
+                </div>
+                <div class="info-item">
+                  <span class="key">Target Network:</span>
+                  <span class="val" id="inspect-network">Undeployed Devnet</span>
+                </div>
+                <div class="info-item">
+                  <span class="key">Contract Address:</span>
+                  <span class="val monospace" id="inspect-contract-addr">0x9a8f...3d2c</span>
+                </div>
+                <div class="info-item">
+                  <span class="key">Proof Server URL:</span>
+                  <span class="val monospace">http://localhost:6300</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="inspector-box">
+              <h3><i class="fa-solid fa-network-wired"></i> Live Ledger State (Query)</h3>
+              <button id="btn-query-ledger" class="btn btn-secondary btn-sm mb-2">
+                <i class="fa-solid fa-rotate"></i> Query On-Chain State
+              </button>
+              <pre id="ledger-state-json" class="json-display">{
+  "totalCardsIssued": 3,
+  "totalValueRedeemed": 100,
+  "activeCommitmentsCount": 2,
+  "lastCommitment": "0x7f8a3b9e4c1d2e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f"
+}</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Built with <i class="fa-solid fa-heart" style="color: #ec4899;"></i> for <strong>Midnight Network dApp Competition</strong> | Level 1, 2 & 3 Full-Stack Submission</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
