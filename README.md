@@ -2,11 +2,20 @@
 
 [![CI/CD Pipeline](https://github.com/Pulgaaa2004/private-digital-gift-cards/actions/workflows/ci.yml/badge.svg)](https://github.com/Pulgaaa2004/private-digital-gift-cards/actions)
 [![Midnight ZK](https://img.shields.io/badge/Midnight-Zero--Knowledge-8b5cf6?style=flat&logo=midnight)](https://midnight.network)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-10b981?style=flat&logo=vercel)](https://private-digital-gift-cards-9tt5.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > **Midnight Network dApp Competition Submission** | Level 1, Level 2, and Level 3 Qualified.  
 > **Level 3 Category**: Confidential Credentials & Private Allowlist / Voucher Access  
+> **Live Demo URL**: [https://private-digital-gift-cards-9tt5.vercel.app/](https://private-digital-gift-cards-9tt5.vercel.app/)  
 > **Proposal Document**: See [PROPOSAL.md](file:///d:/private-digital-gift-cards/PROPOSAL.md)
+
+---
+
+## 🌐 Live Web Demo & App Links
+
+- **Production Live App**: **[https://private-digital-gift-cards-9tt5.vercel.app/](https://private-digital-gift-cards-9tt5.vercel.app/)**
+- **GitHub Repository**: **[https://github.com/Pulgaaa2004/private-digital-gift-cards](https://github.com/Pulgaaa2004/private-digital-gift-cards)**
 
 ---
 
