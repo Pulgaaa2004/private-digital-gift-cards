@@ -25,13 +25,13 @@ globalThis.WebSocket = WebSocket;
 
 // Must match the privateStateId used at deploy time so the CLI reconnects to
 // the same private state. The hello-world contract has no witnesses (empty state).
-const PRIVATE_STATE_ID = 'helloWorldPrivateState';
+const PRIVATE_STATE_ID = 'privateGiftCardState';
 
 const { network, config: networkConfig } = resolveNetwork();
 const SEED = getOrCreateSeed(network);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const zkConfigPath = path.resolve(__dirname, '..', 'contracts', 'managed', 'hello-world');
+const zkConfigPath = path.resolve(__dirname, '..', 'contracts', 'managed', 'private_gift_card');
 
 // Load compiled contract
 const contractPath = path.join(zkConfigPath, 'contract', 'index.js');
@@ -42,9 +42,9 @@ if (!fs.existsSync(contractPath)) {
   process.exit(1);
 }
 
-const HelloWorld = await import(pathToFileURL(contractPath).href);
+const PrivateGiftCard = await import(pathToFileURL(contractPath).href);
 
-const compiledContract = CompiledContract.make('hello-world', HelloWorld.Contract).pipe(
+const compiledContract = CompiledContract.make('private_gift_card', PrivateGiftCard.Contract).pipe(
   CompiledContract.withVacantWitnesses,
   CompiledContract.withCompiledFileAssets(zkConfigPath),
 );
@@ -164,39 +164,66 @@ async function main() {
     // Interactive CLI loop
     let running = true;
     while (running) {
-      console.log('─── Menu ───────────────────────────────────────────────────────');
-      console.log('  1. Store a message');
-      console.log('  2. Read current message');
-      console.log('  3. Check wallet balance');
-      console.log('  4. Exit\n');
+      console.log('─── Private Digital Gift Cards Menu ───────────────────────────');
+      console.log('  1. Issue a Private Gift Card (Merchant)');
+      console.log('  2. Redeem a Gift Card (Recipient)');
+      console.log('  3. Read Ledger State (Public Stats)');
+      console.log('  4. Check Wallet Balance');
+      console.log('  5. Exit\n');
 
       const choice = await rl.question('  Your choice: ');
 
       switch (choice.trim()) {
         case '1': {
-          const message = await rl.question('  Enter your message: ');
-          console.log('\n  Submitting transaction (this may take 30-60 seconds)...');
+          const valueStr = await rl.question('  Gift Card Value (e.g. 50): ');
+          const cardVal = BigInt(valueStr.trim() || '50');
+          // Generate commitment hash mock 32 bytes
+          const mockCommitment = new Uint8Array(32);
+          crypto.getRandomValues(mockCommitment);
+          console.log('\n  Submitting issueCard transaction to Midnight Network...');
           try {
-            const tx = await deployed.callTx.storeMessage(message);
-            console.log(`\n  ✅ Message stored: "${message}"`);
+            const tx = await deployed.callTx.issueCard(mockCommitment, cardVal);
+            console.log(`\n  ✅ Gift Card Issued! Value: ${cardVal}`);
             console.log(`  Transaction ID: ${tx.public.txId}`);
-            console.log(`  Block height: ${tx.public.blockHeight}\n`);
+            console.log(`  Block Height: ${tx.public.blockHeight}\n`);
           } catch (error) {
-            console.error('\n  ❌ Failed:', error instanceof Error ? error.message : error);
+            console.error('\n  ❌ Failed to issue card:', error instanceof Error ? error.message : error);
           }
           break;
         }
 
         case '2': {
-          console.log('\n  Reading message from blockchain...');
+          const valueStr = await rl.question('  Redeem Card Value: ');
+          const cardVal = BigInt(valueStr.trim() || '50');
+          const mockCommitment = new Uint8Array(32);
+          crypto.getRandomValues(mockCommitment);
+          const mockClaimer = new Uint8Array(32);
+          crypto.getRandomValues(mockClaimer);
+
+          console.log('\n  Submitting redeemCard zero-knowledge proof to Midnight Network...');
+          try {
+            const tx = await deployed.callTx.redeemCard(mockCommitment, cardVal, mockClaimer);
+            console.log(`\n  ✅ Gift Card Redeemed Confidentially! Value: ${cardVal}`);
+            console.log(`  Transaction ID: ${tx.public.txId}`);
+            console.log(`  Block Height: ${tx.public.blockHeight}\n`);
+          } catch (error) {
+            console.error('\n  ❌ Failed to redeem card:', error instanceof Error ? error.message : error);
+          }
+          break;
+        }
+
+        case '3': {
+          console.log('\n  Reading public ledger state from Midnight blockchain...');
           try {
             const contractState = await providers.publicDataProvider.queryContractState(deployment.address);
             if (contractState) {
-              const ledgerState = HelloWorld.ledger(contractState.data);
-              const message = Buffer.from(ledgerState.message).toString();
-              console.log(`\n  📋 Current message: "${message}"\n`);
+              const ledgerState = PrivateGiftCard.ledger(contractState.data);
+              console.log('\n  📋 Public Ledger State:');
+              console.log(`    - Total Cards Issued: ${ledgerState.totalCardsIssued}`);
+              console.log(`    - Total Value Redeemed: ${ledgerState.totalValueRedeemed}`);
+              console.log(`    - Active Commitments Count: ${ledgerState.activeCommitmentsCount}\n`);
             } else {
-              console.log('\n  📋 No message found (contract state empty)\n');
+              console.log('\n  📋 Contract state empty\n');
             }
           } catch (error) {
             console.error('\n  ❌ Failed:', error instanceof Error ? error.message : error);
@@ -204,8 +231,8 @@ async function main() {
           break;
         }
 
-        case '3': {
-          console.log('\n  Checking balance...');
+        case '4': {
+          console.log('\n  Checking wallet balance...');
           const currentState = await walletCtx.wallet.waitForSyncedState();
           const currentBalance = currentState.unshielded.balances[unshieldedToken().raw] ?? 0n;
           const dustBalance = currentState.dust.balance(new Date());
@@ -214,13 +241,13 @@ async function main() {
           break;
         }
 
-        case '4':
+        case '5':
           running = false;
           console.log('\n  👋 Goodbye!\n');
           break;
 
         default:
-          console.log('\n  ❌ Invalid choice. Please enter 1-4.\n');
+          console.log('\n  ❌ Invalid choice. Please enter 1-5.\n');
       }
     }
 
