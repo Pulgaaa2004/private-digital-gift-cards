@@ -17,6 +17,7 @@ build/
 
 # Deployment info
 deployment.json
+update_git_author.py
 
 # Wallet seed (sensitive)
 
