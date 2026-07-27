@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vite",
     "compile": "compact compile contracts/private_gift_card.compact contracts/managed/private_gift_card",
-    "build": "npx tsc --noEmit || true",
+    "build": "vite build",
     "setup": "npx tsx src/setup.ts",
     "deploy": "npx tsx src/deploy.ts",
     "cli": "npx tsx src/cli.ts",
