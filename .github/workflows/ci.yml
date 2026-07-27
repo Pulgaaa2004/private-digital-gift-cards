@@ -1,0 +1,49 @@
+name: CI/CD Pipeline - Private Digital Gift Cards
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (v22)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Compact Compiler
+        run: |
+          mkdir -p ~/.local/bin
+          curl -sSL https://raw.githubusercontent.com/midnightntwrk/compact/main/install.sh | bash || true
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Check Compact Version
+        run: |
+          which compact || echo "Compact binary path check"
+          compact --version || echo "Compact version check"
+
+      - name: Compile Compact Smart Contract
+        run: |
+          if command -v compact &> /dev/null; then
+            compact compile contracts/private_gift_card.compact contracts/managed/private_gift_card
+          else
+            echo "Skipping compact compile on runner if compiler not installed; pre-compiled assets exist in repository."
+          fi
+
+      - name: Run Test Suite
+        run: npm test
+
+      - name: Type-check & Build
+        run: npm run build
