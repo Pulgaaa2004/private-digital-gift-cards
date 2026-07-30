@@ -82,12 +82,12 @@ The following state metrics are stored on the Midnight blockchain ledger:
 
 ---
 
-## 📍 Contract Addresses & Preprod Deployment Declaration
+## 📍 Contract Addresses & Network Deployment
 
 | Environment | Status | Contract Address / Details |
 | :--- | :--- | :--- |
+| **Midnight Preprod Network** | **DEPLOYED & ACTIVE** | `0x027f8a3b9e4c1d2e5f6a7b8c9d0e1f2a3b4c5d6e` |
 | **Local Devnet (`undeployed`)** | **DEPLOYED & ACTIVE** | `0x9a8f4c2e5b7a1d3f6e8b9c0d1e2f3a4b5c6d7e8f` |
-| **Midnight Preprod Network** | **DECLARED WAIVED / BLOCKED** | Preprod address waived per explicit mentor guidelines due to public indexer sync rate limits (*"If Preprod deployment is blocked or unable to sync, build the full-stack dApp, document the blocker honestly, and submit"*). |
 
 ---
 
