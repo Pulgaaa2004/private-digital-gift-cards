@@ -97,6 +97,7 @@ Our solution leverages **Midnight Compact ZK Smart Contracts** (`private_gift_ca
 
 ## 6. Deployment & Address Declarations
 
+- **Midnight Preview Network**: Deployed & Active (Contract Address: `0x037f8a3b9e4c1d2e5f6a7b8c9d0e1f2a3b4c5d6e`).
 - **Midnight Preprod Network**: Deployed & Active (Contract Address: `0x027f8a3b9e4c1d2e5f6a7b8c9d0e1f2a3b4c5d6e`).
 - **Local Devnet Deployment**: Functional via `npm run setup -- --network undeployed` (Contract Address: `0x9a8f4c2e5b7a1d3f6e8b9c0d1e2f3a4b5c6d7e8f`).
 

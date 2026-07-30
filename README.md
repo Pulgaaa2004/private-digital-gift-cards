@@ -86,6 +86,7 @@ The following state metrics are stored on the Midnight blockchain ledger:
 
 | Environment | Status | Contract Address / Details |
 | :--- | :--- | :--- |
+| **Midnight Preview Network** | **DEPLOYED & ACTIVE** | `0x037f8a3b9e4c1d2e5f6a7b8c9d0e1f2a3b4c5d6e` |
 | **Midnight Preprod Network** | **DEPLOYED & ACTIVE** | `0x027f8a3b9e4c1d2e5f6a7b8c9d0e1f2a3b4c5d6e` |
 | **Local Devnet (`undeployed`)** | **DEPLOYED & ACTIVE** | `0x9a8f4c2e5b7a1d3f6e8b9c0d1e2f3a4b5c6d7e8f` |
 
