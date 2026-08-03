@@ -81,11 +81,11 @@ async function runTests() {
 
   console.log('\n─── 3. Network Configuration & State ───────────────────');
   const resolved = resolveNetwork({ argv: [] });
-  assert(resolved.network === 'undeployed' || resolved.network === 'preprod', 'Network resolves to valid active network (undeployed/preprod)');
+  assert(resolved.network === 'undeployed' || resolved.network === 'preprod' || resolved.network === 'preview', 'Network resolves to valid active network (preview/preprod/undeployed)');
   assert(typeof resolved.config.indexer === 'string', 'Indexer endpoint is configured');
 
-  const flag = parseNetworkFlag(['node', 'script', '--network', 'preprod']);
-  assert(flag === 'preprod', 'CLI network flag correctly parsed preprod');
+  const flag = parseNetworkFlag(['node', 'script', '--network', 'preview']);
+  assert(flag === 'preview', 'CLI network flag correctly parsed preview');
 
   console.log(`\n========================================`);
   console.log(`Test Summary: ${passed} passed, ${failed} failed`);
