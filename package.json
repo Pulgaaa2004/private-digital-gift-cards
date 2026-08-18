@@ -1,14 +1,15 @@
 {
   "name": "private-digital-gift-cards",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
-  "description": "Private Digital Gift Cards - Confidential Gift Card dApp on Midnight Network",
-  "author": "",
+  "description": "Private Digital Gift Cards - Confidential ZK Voucher dApp on Midnight Network (Next.js & Compact)",
+  "author": "Pulgaaa2004",
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "compile": "compact compile contracts/private_gift_card.compact contracts/managed/private_gift_card",
-    "build": "vite build",
     "setup": "npx tsx src/setup.ts",
     "deploy": "npx tsx src/deploy.ts",
     "cli": "npx tsx src/cli.ts",
@@ -16,7 +17,7 @@
     "network": "npx tsx src/network.ts",
     "proof-server:start": "docker compose up -d",
     "proof-server:stop": "docker compose down",
-    "clean": "rm -rf contracts/managed .midnight-state.json .midnight-wallet-state",
+    "clean": "rm -rf contracts/managed .midnight-state.json .midnight-wallet-state .next",
     "test": "npx tsx test/private_gift_card.test.ts",
     "test:e2e": "tsx scripts/e2e-check.ts"
   },
@@ -32,18 +33,33 @@
     "@midnight-ntwrk/midnight-js-types": "4.1.1",
     "@midnight-ntwrk/midnight-js-utils": "4.1.1",
     "@midnight-ntwrk/wallet-sdk": "1.2.0",
+    "canvas-confetti": "^1.9.3",
+    "lucide-react": "^0.428.0",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "rxjs": "^7.8.2",
-    "ws": "^8.21.1"
+    "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^22.0.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "@types/ws": "^8.18.1",
-    "tsx": "^4.23.1",
-    "typescript": "^6.0.3",
-    "vite": "^5.4.11"
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
   },
   "engines": {
     "node": ">=22.0.0"
   },
-  "keywords": ["midnight", "blockchain", "zero-knowledge", "privacy"]
+  "keywords": [
+    "midnight",
+    "blockchain",
+    "zero-knowledge",
+    "privacy",
+    "nextjs",
+    "gift-cards",
+    "web3"
+  ]
 }
