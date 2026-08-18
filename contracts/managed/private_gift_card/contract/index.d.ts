@@ -11,6 +11,13 @@ export type ImpureCircuits<PS> = {
              cardCommitment_0: Uint8Array,
              cardValue_0: bigint,
              claimerHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  transferCardOwnership(context: __compactRuntime.CircuitContext<PS>,
+                        oldCommitment_0: Uint8Array,
+                        newCommitment_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  refundExpiredCard(context: __compactRuntime.CircuitContext<PS>,
+                    cardCommitment_0: Uint8Array,
+                    cardValue_0: bigint,
+                    merchantAuthHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type ProvableCircuits<PS> = {
@@ -21,6 +28,13 @@ export type ProvableCircuits<PS> = {
              cardCommitment_0: Uint8Array,
              cardValue_0: bigint,
              claimerHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  transferCardOwnership(context: __compactRuntime.CircuitContext<PS>,
+                        oldCommitment_0: Uint8Array,
+                        newCommitment_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  refundExpiredCard(context: __compactRuntime.CircuitContext<PS>,
+                    cardCommitment_0: Uint8Array,
+                    cardValue_0: bigint,
+                    merchantAuthHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type PureCircuits = {
@@ -34,11 +48,20 @@ export type Circuits<PS> = {
              cardCommitment_0: Uint8Array,
              cardValue_0: bigint,
              claimerHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  transferCardOwnership(context: __compactRuntime.CircuitContext<PS>,
+                        oldCommitment_0: Uint8Array,
+                        newCommitment_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  refundExpiredCard(context: __compactRuntime.CircuitContext<PS>,
+                    cardCommitment_0: Uint8Array,
+                    cardValue_0: bigint,
+                    merchantAuthHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type Ledger = {
   readonly totalCardsIssued: bigint;
   readonly totalValueRedeemed: bigint;
+  readonly totalValueRefunded: bigint;
+  readonly totalTransfersCount: bigint;
   readonly activeCommitmentsCount: bigint;
   readonly lastCommitment: Uint8Array;
 }

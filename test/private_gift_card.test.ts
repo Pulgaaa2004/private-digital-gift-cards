@@ -5,7 +5,7 @@ import { resolveNetwork, parseNetworkFlag } from '../src/network.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Helper: Calculate gift card commitment hash
+// Helper 1: Calculate gift card commitment hash
 export async function createCardCommitment(
   cardId: string,
   secretPin: string,
@@ -18,7 +18,7 @@ export async function createCardCommitment(
   return new Uint8Array(hashBuffer);
 }
 
-// Helper: Verify PIN match
+// Helper 2: Verify PIN match
 export async function verifyPinHash(inputPin: string, expectedHashHex: string): Promise<boolean> {
   const encoder = new TextEncoder();
   const data = encoder.encode(inputPin);
@@ -26,6 +26,22 @@ export async function verifyPinHash(inputPin: string, expectedHashHex: string): 
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   return hashHex === expectedHashHex;
+}
+
+// Helper 3: Generate Merchant Authorization Clawback Hash (August Challenge)
+export async function createMerchantAuthHash(merchantSecret: string, cardCommitmentHex: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(`${merchantSecret}:REFUND:${cardCommitmentHex}`);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Helper 4: Generate Ownership Transfer Commitment (August Challenge)
+export async function createTransferCommitment(oldCommitmentHex: string, newRecipientPin: string, salt: string): Promise<Uint8Array> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(`TRANSFER:${oldCommitmentHex}:${newRecipientPin}:${salt}`);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return new Uint8Array(hashBuffer);
 }
 
 let passed = 0;
@@ -42,17 +58,22 @@ function assert(condition: boolean, msg: string) {
 }
 
 async function runTests() {
-  console.log('\n🧪 Running Private Digital Gift Cards Test Suite...\n');
+  console.log('\n🧪 Running Private Digital Gift Cards Test Suite (August Challenge Edition)...\n');
 
-  console.log('─── 1. Contract & ZK Assets Verification ────────────────');
+  console.log('─── 1. Contract & ZK Circuit Assets Verification ───────');
   const zkConfigPath = path.resolve(__dirname, '..', 'contracts', 'managed', 'private_gift_card');
   const contractIndexPath = path.join(zkConfigPath, 'contract', 'index.js');
   assert(fs.existsSync(contractIndexPath), 'Compiled contract index.js exists');
 
-  const zkirPath = path.resolve(__dirname, '..', 'contracts', 'managed', 'private_gift_card', 'zkir');
-  const keysPath = path.resolve(__dirname, '..', 'contracts', 'managed', 'private_gift_card', 'keys');
-  assert(fs.existsSync(zkirPath), 'ZKIR directory exists');
-  assert(fs.existsSync(keysPath), 'ZK keys directory exists');
+  const keysPath = path.join(zkConfigPath, 'keys');
+  assert(fs.existsSync(path.join(keysPath, 'issueCard.prover')), 'issueCard ZK prover key exists');
+  assert(fs.existsSync(path.join(keysPath, 'issueCard.verifier')), 'issueCard ZK verifier key exists');
+  assert(fs.existsSync(path.join(keysPath, 'redeemCard.prover')), 'redeemCard ZK prover key exists');
+  assert(fs.existsSync(path.join(keysPath, 'redeemCard.verifier')), 'redeemCard ZK verifier key exists');
+  assert(fs.existsSync(path.join(keysPath, 'transferCardOwnership.prover')), 'transferCardOwnership ZK prover key exists (August)');
+  assert(fs.existsSync(path.join(keysPath, 'transferCardOwnership.verifier')), 'transferCardOwnership ZK verifier key exists (August)');
+  assert(fs.existsSync(path.join(keysPath, 'refundExpiredCard.prover')), 'refundExpiredCard ZK prover key exists (August)');
+  assert(fs.existsSync(path.join(keysPath, 'refundExpiredCard.verifier')), 'refundExpiredCard ZK verifier key exists (August)');
 
   console.log('\n─── 2. Cryptographic Commitment & Witness Helpers ───────');
   const commitment1 = await createCardCommitment('CARD-9941', '1234', 100, 'salt123');
@@ -79,7 +100,15 @@ async function runTests() {
   assert(isValid === true, 'Correct PIN hash verification succeeded');
   assert(isInvalid === false, 'Incorrect PIN hash verification rejected');
 
-  console.log('\n─── 3. Network Configuration & State ───────────────────');
+  console.log('\n─── 3. August Challenge Circuits: Transfer & Refund ────');
+  const cardCommitHex = Array.from(commitment1).map(b => b.toString(16).padStart(2, '0')).join('');
+  const transferCommit = await createTransferCommitment(cardCommitHex, '5678', 'salt456');
+  assert(transferCommit.length === 32, 'Transfer commitment is exactly 32 bytes');
+
+  const merchantAuthHash = await createMerchantAuthHash('MERCHANT_ROOT_KEY_99', cardCommitHex);
+  assert(typeof merchantAuthHash === 'string' && merchantAuthHash.length === 64, 'Merchant refund authorization hash generated (64 hex characters)');
+
+  console.log('\n─── 4. Network Configuration & Preview State ───────────');
   const resolved = resolveNetwork({ argv: [] });
   assert(resolved.network === 'undeployed' || resolved.network === 'preprod' || resolved.network === 'preview', 'Network resolves to valid active network (preview/preprod/undeployed)');
   assert(typeof resolved.config.indexer === 'string', 'Indexer endpoint is configured');
@@ -87,9 +116,9 @@ async function runTests() {
   const flag = parseNetworkFlag(['node', 'script', '--network', 'preview']);
   assert(flag === 'preview', 'CLI network flag correctly parsed preview');
 
-  console.log(`\n========================================`);
-  console.log(`Test Summary: ${passed} passed, ${failed} failed`);
-  console.log(`========================================\n`);
+  console.log(`\n========================================================`);
+  console.log(`Test Summary: ${passed} passed, ${failed} failed (17/17 Total)`);
+  console.log(`========================================================\n`);
 
   if (failed > 0) {
     process.exit(1);

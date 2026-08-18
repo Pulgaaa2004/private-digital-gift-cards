@@ -61,6 +61,65 @@
         "types": [
         ]
       }
+    },
+    {
+      "name": "transferCardOwnership",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "oldCommitment",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "newCommitment",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "refundExpiredCard",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "cardCommitment",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "cardValue",
+          "type": {
+            "type-name": "Uint",
+            "maxval": 18446744073709551615
+          }
+        },
+        {
+          "name": "merchantAuthHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
     }
   ],
   "witnesses": [
@@ -89,7 +148,7 @@
       }
     },
     {
-      "name": "activeCommitmentsCount",
+      "name": "totalValueRefunded",
       "index": 2,
       "exported": true,
       "storage": "Cell",
@@ -99,8 +158,28 @@
       }
     },
     {
-      "name": "lastCommitment",
+      "name": "totalTransfersCount",
       "index": 3,
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Uint",
+        "maxval": 18446744073709551615
+      }
+    },
+    {
+      "name": "activeCommitmentsCount",
+      "index": 4,
+      "exported": true,
+      "storage": "Cell",
+      "type": {
+        "type-name": "Uint",
+        "maxval": 18446744073709551615
+      }
+    },
+    {
+      "name": "lastCommitment",
+      "index": 5,
       "exported": true,
       "storage": "Cell",
       "type": {
