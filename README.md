@@ -31,13 +31,16 @@
 ### 2. Interactive Scratch & Redeem Portal
 ![Interactive Scratch & Redeem Portal](assets/02-scratch-redeem.png)
 
-### 3. Encrypted Vault Tab
+### 3. ZK Privacy Architecture Visualizer
+![ZK Privacy Architecture Visualizer](assets/03-zk-privacy-visualizer.png)
+
+### 4. Encrypted Local Vault Tab
 ![Encrypted Vault](assets/03-encrypted-vault.png)
 
-### 4. Merchant Analytics Ledger
+### 5. Merchant Analytics Ledger
 ![Merchant Ledger](assets/04-merchant-ledger.png)
 
-### 5. Midnight Smart Contract Inspector
+### 6. Midnight Smart Contract Inspector
 ![State & Contract Inspector](assets/05-state-contract.png)
 
 ---
