@@ -34,8 +34,8 @@
 ### 3. ZK Privacy Architecture Visualizer
 ![ZK Privacy Architecture Visualizer](assets/03-zk-privacy-visualizer.png)
 
-### 4. Encrypted Local Vault Tab
-![Encrypted Vault](assets/03-encrypted-vault.png)
+### 4. Encrypted Gift Card Vault
+![Encrypted Gift Card Vault](assets/03-encrypted-vault.png)
 
 ### 5. Merchant Analytics Ledger
 ![Merchant Ledger](assets/04-merchant-ledger.png)
