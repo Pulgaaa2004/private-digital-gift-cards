@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Sparkles, RotateCw, ShieldCheck, Lock, Gift, CheckCircle2 } from 'lucide-react';
+import { Sparkles, RotateCw, ShieldCheck, Lock, Gift, CheckCircle2, Award, Zap, Diamond, Flame } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export type CardTheme = 'obsidian' | 'gold' | 'cyberpunk' | 'emerald';
+export type CardTheme = 'gold' | 'diamond' | 'obsidian' | 'emerald' | 'cyberpunk';
 
 interface CardStudio3DProps {
   onCardIssued: (card: {
@@ -20,7 +20,7 @@ interface CardStudio3DProps {
 }
 
 export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
-  const [theme, setTheme] = useState<CardTheme>('obsidian');
+  const [theme, setTheme] = useState<CardTheme>('gold');
   const [isFlipped, setIsFlipped] = useState(false);
   const [merchant, setMerchant] = useState('Luxe Digital Store');
   const [value, setValue] = useState(100);
@@ -46,8 +46,7 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
     setIsIssuing(true);
     const cardId = `CARD-${Math.floor(1000 + Math.random() * 9000)}-ZK`;
     const salt = Math.random().toString(36).substring(2, 10);
-    
-    // Simulate ZK circuit computation and proof generation
+
     setTimeout(async () => {
       const commitment = await generateCommitment(cardId, secretPin, value, salt);
       const newCard = {
@@ -66,20 +65,28 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
       setIsIssuing(false);
 
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 100,
+        spread: 80,
         origin: { y: 0.6 },
-        colors: ['#8b5cf6', '#f59e0b', '#06b6d4', '#10b981'],
+        colors: ['#f59e0b', '#38bdf8', '#8b5cf6', '#10b981'],
       });
     }, 1200);
   };
 
+  const themesConfig: { id: CardTheme; name: string; icon: any; color: string }[] = [
+    { id: 'gold', name: 'Quantum Gold', icon: Flame, color: '#f59e0b' },
+    { id: 'diamond', name: 'Diamond Prism', icon: Diamond, color: '#38bdf8' },
+    { id: 'obsidian', name: 'Obsidian Velvet', icon: Award, color: '#a855f7' },
+    { id: 'emerald', name: 'Emerald Royale', icon: ShieldCheck, color: '#10b981' },
+    { id: 'cyberpunk', name: 'Neon Cyber', icon: Zap, color: '#ec4899' },
+  ];
+
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '32px', alignItems: 'start' }}>
       {/* 3D Card Preview Panel */}
-      <div className="glass-panel" style={{ padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Sparkles size={18} color="var(--accent-gold)" /> Live 3D Gift Card Visualizer
+      <div className="glass-panel-glow" style={{ padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Sparkles size={18} color="var(--accent-gold)" /> Live 3D Holographic Visualizer
         </h3>
 
         <div className="card-container-3d" style={{ width: '100%', maxWidth: '360px', height: '220px', marginBottom: '24px' }}>
@@ -87,25 +94,27 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
             {/* Front of Card */}
             <div className={`card-face theme-${theme}`}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '13px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.9 }}>
+                <span style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.95 }}>
                   {merchant || 'MERCHANT STORE'}
                 </span>
-                <Gift size={22} style={{ opacity: 0.8 }} />
+                <div className="wax-seal">
+                  <Lock size={15} />
+                </div>
               </div>
 
               <div style={{ textAlign: 'center', margin: 'auto 0' }}>
-                <div style={{ fontSize: '38px', fontWeight: 800, letterSpacing: '-0.5px' }}>
+                <div style={{ fontSize: '42px', fontWeight: 800, letterSpacing: '-0.5px' }}>
                   ${value || 0}
                 </div>
-                <div style={{ fontSize: '12px', fontWeight: 600, opacity: 0.8, letterSpacing: '1px', textTransform: 'uppercase' }}>
-                  Confidential Gift Voucher
+                <div style={{ fontSize: '11px', fontWeight: 700, opacity: 0.85, letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+                  Confidential ZK Voucher
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', opacity: 0.75 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', opacity: 0.85 }}>
                 <span>•••• •••• •••• 9941</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <ShieldCheck size={13} /> Midnight ZK Enforced
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+                  <ShieldCheck size={14} /> Midnight Preview
                 </span>
               </div>
             </div>
@@ -113,21 +122,21 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
             {/* Back of Card */}
             <div className={`card-face card-back theme-${theme}`}>
               <div>
-                <div style={{ background: 'rgba(0,0,0,0.35)', height: '36px', width: 'calc(100% + 48px)', margin: '-24px -24px 16px -24px' }} />
-                <p style={{ fontSize: '11px', fontStyle: 'italic', opacity: 0.85, lineHeight: 1.4 }}>
+                <div style={{ background: 'rgba(0,0,0,0.4)', height: '36px', width: 'calc(100% + 48px)', margin: '-24px -24px 16px -24px' }} />
+                <p style={{ fontSize: '11px', fontStyle: 'italic', opacity: 0.9, lineHeight: 1.4 }}>
                   "{note || 'Confidential gift card message'}"
                 </p>
               </div>
 
-              <div style={{ background: 'rgba(255,255,255,0.12)', padding: '8px 12px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '11px', fontWeight: 600 }}>Secret PIN:</span>
+              <div style={{ background: 'rgba(255,255,255,0.15)', padding: '8px 12px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '11px', fontWeight: 600 }}>Secret PIN Witness:</span>
                 <span style={{ fontFamily: 'monospace', fontWeight: 700, letterSpacing: '3px' }}>
                   {secretPin ? '••••' : 'NONE'}
                 </span>
               </div>
 
-              <div style={{ fontSize: '9px', opacity: 0.6, textAlign: 'center' }}>
-                Zero-knowledge proof required to redeem. Valid on Midnight Preview.
+              <div style={{ fontSize: '9px', opacity: 0.7, textAlign: 'center' }}>
+                Encrypted via client Web Crypto AES-GCM 256-bit. Valid on Midnight Network.
               </div>
             </div>
           </div>
@@ -141,10 +150,10 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
             background: 'rgba(255, 255, 255, 0.08)',
             border: '1px solid var(--border-glass)',
             color: 'var(--text-primary)',
-            padding: '10px 20px',
-            borderRadius: '10px',
+            padding: '10px 22px',
+            borderRadius: '12px',
             fontSize: '13px',
-            fontWeight: 500,
+            fontWeight: 600,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -159,39 +168,47 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
       {/* Issuance Form Panel */}
       <div className="glass-panel" style={{ padding: '32px' }}>
         <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Sparkles size={20} color="var(--accent-midnight)" /> Customize & Issue ZK Gift Card
+          <Sparkles size={20} color="var(--accent-gold)" /> Issue August ZK Gift Card
         </h3>
         <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
-          Issue zero-knowledge vouchers backed by Midnight smart contract circuit.
+          Customize gift card materials, face value, and secret passcode witness.
         </p>
 
-        {/* Theme Selection */}
+        {/* Theme Material Selector */}
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '10px' }}>
-            Card Visual Theme
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '10px' }}>
+            Select Luxury Material Theme
           </label>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
-            {(['obsidian', 'gold', 'cyberpunk', 'emerald'] as CardTheme[]).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setTheme(t)}
-                style={{
-                  padding: '8px 4px',
-                  borderRadius: '8px',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  textTransform: 'capitalize',
-                  cursor: 'pointer',
-                  border: theme === t ? '2px solid var(--accent-midnight)' : '1px solid var(--border-glass)',
-                  background: t === 'obsidian' ? '#1e1e24' : t === 'gold' ? '#f59e0b' : t === 'cyberpunk' ? 'linear-gradient(135deg, #ec4899, #8b5cf6)' : '#059669',
-                  color: t === 'gold' ? '#000' : '#fff',
-                  boxShadow: theme === t ? '0 0 12px rgba(139, 92, 246, 0.5)' : 'none',
-                }}
-              >
-                {t}
-              </button>
-            ))}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '8px' }}>
+            {themesConfig.map((t) => {
+              const Icon = t.icon;
+              const isSel = theme === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setTheme(t.id)}
+                  style={{
+                    padding: '8px 6px',
+                    borderRadius: '10px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    border: isSel ? `2px solid ${t.color}` : '1px solid var(--border-glass)',
+                    background: isSel ? `${t.color}25` : 'rgba(10, 12, 22, 0.6)',
+                    color: isSel ? '#fff' : 'var(--text-secondary)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '4px',
+                    boxShadow: isSel ? `0 0 14px ${t.color}50` : 'none',
+                  }}
+                >
+                  <Icon size={14} color={t.color} />
+                  {t.name}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -199,7 +216,7 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '12px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                Merchant / Store Name
+                Merchant / Brand Name
               </label>
               <input
                 type="text"
@@ -211,7 +228,7 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
             </div>
             <div>
               <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                Voucher Value ($)
+                Value ($)
               </label>
               <input
                 type="number"
@@ -251,11 +268,8 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
                 required
                 style={{ width: '100%', padding: '10px 14px 10px 38px', background: 'rgba(10, 12, 22, 0.7)', border: '1px solid var(--border-glass)', borderRadius: '8px', color: '#fff', fontSize: '13px', letterSpacing: '2px' }}
               />
-              <Lock size={16} color="var(--accent-midnight)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+              <Lock size={16} color="var(--accent-gold)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
             </div>
-            <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>
-              Observers cannot see this PIN. It is hashed into the card's ZK commitment.
-            </p>
           </div>
 
           <button
@@ -264,18 +278,18 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
             style={{
               marginTop: '8px',
               padding: '14px 20px',
-              background: 'linear-gradient(135deg, var(--accent-midnight), var(--accent-purple))',
-              color: '#ffffff',
+              background: 'linear-gradient(135deg, var(--accent-gold), #d97706)',
+              color: '#1a1202',
               border: 'none',
-              borderRadius: '10px',
+              borderRadius: '12px',
               fontSize: '14px',
-              fontWeight: 600,
+              fontWeight: 700,
               cursor: isIssuing ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '10px',
-              boxShadow: 'var(--glow-purple)',
+              boxShadow: 'var(--glow-gold)',
               transition: 'all 0.2s ease',
             }}
           >
@@ -285,7 +299,7 @@ export const CardStudio3D: React.FC<CardStudio3DProps> = ({ onCardIssued }) => {
               </>
             ) : (
               <>
-                <ShieldCheck size={18} /> Issue ZK Card on Midnight
+                <ShieldCheck size={18} /> Issue ZK Voucher on Midnight
               </>
             )}
           </button>

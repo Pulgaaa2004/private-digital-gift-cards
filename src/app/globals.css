@@ -1,23 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --bg-primary: #0a0c16;
-  --bg-secondary: #111425;
-  --bg-card: rgba(18, 22, 40, 0.75);
-  --bg-glass: rgba(25, 30, 55, 0.6);
+  --bg-primary: #050711;
+  --bg-secondary: #0b0e1e;
+  --bg-card: rgba(15, 20, 38, 0.75);
+  --bg-glass: rgba(22, 28, 54, 0.6);
   --accent-midnight: #8b5cf6;
   --accent-purple: #a855f7;
   --accent-cyan: #06b6d4;
   --accent-gold: #f59e0b;
   --accent-emerald: #10b981;
   --accent-rose: #f43f5e;
+  --accent-diamond: #38bdf8;
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --border-glass: rgba(148, 163, 184, 0.12);
-  --border-glow: rgba(139, 92, 246, 0.35);
-  --glow-purple: 0 0 25px rgba(139, 92, 246, 0.35);
-  --glow-gold: 0 0 25px rgba(245, 158, 11, 0.35);
+  --border-glow: rgba(139, 92, 246, 0.4);
+  --glow-purple: 0 0 30px rgba(139, 92, 246, 0.4);
+  --glow-gold: 0 0 30px rgba(245, 158, 11, 0.4);
+  --glow-cyan: 0 0 30px rgba(6, 182, 212, 0.4);
 }
 
 * {
@@ -32,11 +34,48 @@ body {
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(17, 20, 37, 0.5) 0%, transparent 70%);
-  background-attachment: fixed;
+  position: relative;
+}
+
+/* Ambient Holographic Floating Light Orbs */
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  z-index: -1;
+  animation: floatOrb1 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -10%;
+  right: -10%;
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  z-index: -1;
+  animation: floatOrb2 22s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes floatOrb1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(12%, 15%) scale(1.15); }
+  100% { transform: translate(-8%, 20%) scale(0.95); }
+}
+
+@keyframes floatOrb2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-15%, -10%) scale(1.12); }
+  100% { transform: translate(10%, -18%) scale(1); }
 }
 
 /* Custom Scrollbar */
@@ -58,13 +97,13 @@ body {
   background: var(--accent-midnight);
 }
 
-/* Glassmorphism Utilities */
+/* Glassmorphism Panels */
 .glass-panel {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-glass);
-  border-radius: 16px;
+  border-radius: 20px;
 }
 
 .glass-panel-glow {
@@ -72,10 +111,10 @@ body {
   backdrop-filter: blur(16px);
   border: 1px solid var(--border-glow);
   box-shadow: var(--glow-purple);
-  border-radius: 16px;
+  border-radius: 20px;
 }
 
-/* 3D Card Physics Styles */
+/* 3D Card Physics Container */
 .card-container-3d {
   perspective: 1200px;
 }
@@ -87,7 +126,7 @@ body {
   height: 230px;
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border-radius: 20px;
+  border-radius: 22px;
 }
 
 .card-3d.flipped {
@@ -99,13 +138,13 @@ body {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 20px;
+  border-radius: 22px;
   padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   overflow: hidden;
 }
 
@@ -113,29 +152,41 @@ body {
   transform: rotateY(180deg);
 }
 
-/* Themes */
-.theme-obsidian {
-  background: linear-gradient(135deg, #1e1e24 0%, #0b0c10 50%, #1f2833 100%);
-  color: #ffffff;
-}
-
+/* 5 Luxury Material Themes (August Challenge Edition) */
 .theme-gold {
-  background: linear-gradient(135deg, #d97706 0%, #f59e0b 35%, #fbbf24 70%, #b45309 100%);
-  color: #1a1202;
-  border: 1px solid rgba(254, 243, 199, 0.4);
+  background: linear-gradient(135deg, #b45309 0%, #f59e0b 35%, #fbbf24 70%, #d97706 100%);
+  color: #1c1303;
+  border: 1px solid rgba(254, 243, 199, 0.5);
+  box-shadow: var(--glow-gold);
 }
 
-.theme-cyberpunk {
-  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%);
+.theme-diamond {
+  background: linear-gradient(135deg, #0284c7 0%, #38bdf8 40%, #818cf8 70%, #c084fc 100%);
   color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: var(--glow-cyan);
+}
+
+.theme-obsidian {
+  background: linear-gradient(135deg, #18181b 0%, #09090b 50%, #27272a 100%);
+  color: #ffffff;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  box-shadow: var(--glow-purple);
 }
 
 .theme-emerald {
   background: linear-gradient(135deg, #065f46 0%, #10b981 50%, #047857 100%);
   color: #ffffff;
+  border: 1px solid rgba(167, 243, 208, 0.4);
 }
 
-/* Shimmer Animation */
+.theme-cyberpunk {
+  background: linear-gradient(135deg, #db2777 0%, #8b5cf6 50%, #06b6d4 100%);
+  color: #ffffff;
+  border: 1px solid rgba(244, 114, 182, 0.4);
+}
+
+/* Metallic Shimmer Animation */
 .shimmer {
   position: relative;
   overflow: hidden;
@@ -151,7 +202,7 @@ body {
   background: linear-gradient(
     60deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.15) 30%,
+    rgba(255, 255, 255, 0.22) 30%,
     transparent 40%
   );
   transform: rotate(30deg);
@@ -163,12 +214,16 @@ body {
   100% { transform: translate(100%, 100%) rotate(30deg); }
 }
 
-/* Animations */
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(139, 92, 246, 0.6); }
-}
-
-.glow-active {
-  animation: pulseGlow 2.5s infinite ease-in-out;
+/* Wax Seal Badge */
+.wax-seal {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f43f5e 0%, #be123c 70%, #881337 100%);
+  border: 2px solid #fda4af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(190, 18, 60, 0.5);
 }

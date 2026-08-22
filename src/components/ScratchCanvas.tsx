@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import { Sparkles, Key, CheckCircle2, AlertCircle, RotateCw } from 'lucide-react';
+import { Sparkles, Key, CheckCircle2, AlertCircle, RotateCw, Flame } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface ScratchCanvasProps {
@@ -21,7 +21,6 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
   const [redeemed, setRedeemed] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Gift card details to reveal
   const sampleCard = {
     id: 'CARD-8819-ZK',
     value: 100,
@@ -37,17 +36,17 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
 
     // Draw metallic gold foil layer
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, '#f59e0b');
-    gradient.addColorStop(0.3, '#fbbf24');
-    gradient.addColorStop(0.6, '#d97706');
+    gradient.addColorStop(0, '#d97706');
+    gradient.addColorStop(0.3, '#f59e0b');
+    gradient.addColorStop(0.6, '#fbbf24');
     gradient.addColorStop(1, '#b45309');
 
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Decorative foil pattern & instructions
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-    ctx.font = 'bold 16px Outfit, sans-serif';
+    // Decorative foil pattern & text
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.font = 'bold 15px Outfit, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('✨ SCRATCH WITH CURSOR TO REVEAL ✨', canvas.width / 2, canvas.height / 2);
 
@@ -68,7 +67,7 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
       const { x, y } = getPos(e);
       ctx.globalCompositeOperation = 'destination-out';
       ctx.beginPath();
-      ctx.arc(x, y, 22, 0, Math.PI * 2);
+      ctx.arc(x, y, 24, 0, Math.PI * 2);
       ctx.fill();
 
       calculateProgress();
@@ -128,8 +127,8 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
         });
 
         confetti({
-          particleCount: 100,
-          spread: 80,
+          particleCount: 120,
+          spread: 90,
           origin: { y: 0.55 },
           colors: ['#10b981', '#06b6d4', '#f59e0b'],
         });
@@ -147,12 +146,12 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
           <Sparkles size={22} color="var(--accent-gold)" /> Interactive Scratch & Redeem Portal
         </h3>
         <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '28px' }}>
-          Scratch off the metallic foil layer using your cursor to reveal confidential voucher secrets.
+          Scratch off the metallic gold foil layer with your cursor to reveal confidential voucher secrets.
         </p>
 
         {/* Scratch Card Container */}
-        <div style={{ position: 'relative', width: '100%', maxWidth: '420px', height: '230px', margin: '0 auto 20px', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 20px 40px -15px rgba(0,0,0,0.7)', border: '1px solid rgba(255,255,255,0.1)' }}>
-          {/* Underneath Card Content (Revealed upon scratching) */}
+        <div style={{ position: 'relative', width: '100%', maxWidth: '420px', height: '230px', margin: '0 auto 20px', borderRadius: '18px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.75)', border: '1px solid rgba(255,255,255,0.18)' }}>
+          {/* Underneath Card Content */}
           <div
             style={{
               position: 'absolute',
@@ -167,17 +166,17 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase' }}>
                 {sampleCard.merchant}
               </span>
-              <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.15)', padding: '3px 8px', borderRadius: '6px' }}>
+              <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.15)', padding: '4px 10px', borderRadius: '6px', fontWeight: 600 }}>
                 {sampleCard.id}
               </span>
             </div>
 
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '36px', fontWeight: 800 }}>${sampleCard.value}</div>
-              <div style={{ fontSize: '12px', color: '#a5b4fc', letterSpacing: '1px', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '38px', fontWeight: 800 }}>${sampleCard.value}</div>
+              <div style={{ fontSize: '12px', color: '#a5b4fc', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: 600 }}>
                 Claim Voucher Code: <strong>GIFT-LUXE-100-ZK</strong>
               </div>
             </div>
@@ -210,7 +209,7 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
         <div style={{ maxWidth: '420px', margin: '0 auto 28px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px' }}>
             <span>Foil Scratched Progress:</span>
-            <span style={{ fontWeight: 600, color: scratchPercent > 50 ? 'var(--accent-emerald)' : 'var(--accent-gold)' }}>
+            <span style={{ fontWeight: 700, color: scratchPercent > 50 ? 'var(--accent-emerald)' : 'var(--accent-gold)' }}>
               {scratchPercent}% Scratched
             </span>
           </div>
@@ -226,7 +225,7 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
           </div>
         </div>
 
-        {/* Redemption Proof Form */}
+        {/* Redemption Form */}
         {!redeemed ? (
           <form onSubmit={handleRedeem} style={{ maxWidth: '420px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div>
@@ -252,7 +251,7 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
                     letterSpacing: '2px',
                   }}
                 />
-                <Key size={16} color="var(--accent-midnight)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+                <Key size={16} color="var(--accent-emerald)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
               </div>
             </div>
 
@@ -272,7 +271,7 @@ export const ScratchCanvas: React.FC<ScratchCanvasProps> = ({ onCardRedeemed }) 
                 border: 'none',
                 borderRadius: '10px',
                 fontSize: '14px',
-                fontWeight: 600,
+                fontWeight: 700,
                 cursor: isRedeeming ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
