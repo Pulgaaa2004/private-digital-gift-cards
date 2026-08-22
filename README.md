@@ -23,6 +23,25 @@
 
 ---
 
+## Screenshots & Visual Walkthrough
+
+### 1. 3D Studio & Issue Portal
+![3D Studio & Issue](assets/01-3d-studio-issue.png)
+
+### 2. Scratch & Redeem Portal
+![Scratch & Redeem](assets/02-scratch-redeem.png)
+
+### 3. Encrypted Vault Tab
+![Encrypted Vault](assets/03-encrypted-vault.png)
+
+### 4. Merchant Analytics Ledger
+![Merchant Ledger](assets/04-merchant-ledger.png)
+
+### 5. Midnight Smart Contract Inspector
+![State & Contract Inspector](assets/05-state-contract.png)
+
+---
+
 ## Contract Address
 
 | Network | Status | Contract Address |
