@@ -37,8 +37,8 @@
 ### 4. Encrypted Gift Card Vault
 ![Encrypted Gift Card Vault](assets/03-encrypted-vault.png)
 
-### 5. Merchant Analytics Ledger
-![Merchant Ledger](assets/04-merchant-ledger.png)
+### 5. Merchant Analytics & Voucher Ledger
+![Merchant Analytics & Voucher Ledger](assets/04-merchant-ledger.png)
 
 ### 6. Midnight Smart Contract Inspector
 ![State & Contract Inspector](assets/05-state-contract.png)
