@@ -25,8 +25,8 @@
 
 ## Screenshots & Visual Walkthrough
 
-### 1. 3D Studio & Issue Portal
-![3D Studio & Issue](assets/01-3d-studio-issue.png)
+### 1. 3D Holographic Studio & Voucher Issuance
+![3D Holographic Studio & Voucher Issuance](assets/01-3d-studio-issue.png)
 
 ### 2. Scratch & Redeem Portal
 ![Scratch & Redeem](assets/02-scratch-redeem.png)
