@@ -40,8 +40,8 @@
 ### 5. Merchant Analytics & Voucher Ledger
 ![Merchant Analytics & Voucher Ledger](assets/04-merchant-ledger.png)
 
-### 6. Midnight Smart Contract Inspector
-![State & Contract Inspector](assets/05-state-contract.png)
+### 6. Midnight Smart Contract & Circuit Inspector
+![Midnight Smart Contract & Circuit Inspector](assets/05-state-contract.png)
 
 ---
 
