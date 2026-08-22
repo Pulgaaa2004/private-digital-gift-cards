@@ -28,8 +28,8 @@
 ### 1. 3D Holographic Studio & Voucher Issuance
 ![3D Holographic Studio & Voucher Issuance](assets/01-3d-studio-issue.png)
 
-### 2. Scratch & Redeem Portal
-![Scratch & Redeem](assets/02-scratch-redeem.png)
+### 2. Interactive Scratch & Redeem Portal
+![Interactive Scratch & Redeem Portal](assets/02-scratch-redeem.png)
 
 ### 3. Encrypted Vault Tab
 ![Encrypted Vault](assets/03-encrypted-vault.png)
